@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+{{ form_start(form) }}
+
+<ul class="pokemon" data-prototype="{{ form_widget(form.pokemons.vars.prototype)|e }}"></ul>
+
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script type="text/javascript" src="{{ asset('script/main.js') }}"></script>
+{% endblock %}

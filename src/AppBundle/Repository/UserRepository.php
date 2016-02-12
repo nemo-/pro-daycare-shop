@@ -43,4 +43,20 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param $id
+     *
+     * @return User
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getById($id)
+    {
+        return $this
+            ->createQueryBuilder('u')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

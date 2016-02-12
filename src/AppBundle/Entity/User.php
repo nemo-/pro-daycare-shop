@@ -2,10 +2,12 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\Exclude;
 
 /**
  * User
@@ -47,10 +49,8 @@ class User implements UserInterface
     /**
      * @var string $plainPassword
      *
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
      */
-    private $plainPassword;
+    private $plainPassword; //TODO: Put assert into Type
 
     /**
      * @var string $email
@@ -84,6 +84,14 @@ class User implements UserInterface
     private $salt;
 
     /**
+     * @var Pokemon[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Pokemon", mappedBy="user", cascade={"persist"})
+     * @Exclude()
+     */
+    private $pokemons;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -91,6 +99,7 @@ class User implements UserInterface
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
         $this->salt      = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->pokemons  = new ArrayCollection();
     }
 
     /**
@@ -255,5 +264,47 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         $this->plainPassword = null;
+    }
+
+    /**
+     * @return Pokemon[]|ArrayCollection
+     */
+    public function getPokemons()
+    {
+        return $this->pokemons;
+    }
+
+    /**
+     * @param Pokemon[]|ArrayCollection $pokemons
+     *
+     * @return User
+     */
+    public function setPokemons(array $pokemons = [])
+    {
+        $this->pokemons = new ArrayCollection();
+
+        foreach ($pokemons as $pokemon) {
+            $this->addPokemon($pokemon);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Pokemon $pokemon
+     */
+    public function addPokemon(Pokemon $pokemon)
+    {
+        $pokemon->setUser($this);
+
+        $this->pokemons->add($pokemon);
+    }
+
+    /**
+     * @param Pokemon $pokemon
+     */
+    public function removePokemon(Pokemon $pokemon)
+    {
+        $this->pokemons->removeElement($pokemon);
     }
 }

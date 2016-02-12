@@ -1,0 +1,12 @@
+Hello {{ user.username }}, what are you going to do on our awesome site ?
+
+<div>
+    <a href="{{ path('caring_add_pokemon', { 'id': app.user.id }) }}">
+        Add a list of Pokemon to care
+    </a>
+</div>
+<div>
+    <a href="{{ path('security_logout') }}">
+        Logout
+    </a>
+</div>

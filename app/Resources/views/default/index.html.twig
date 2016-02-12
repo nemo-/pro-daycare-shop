@@ -10,8 +10,12 @@ Hello, what are you going to do on our awesome site ?
         Login Section
     </a>
 </div>
-<div>
-    <a href="{{ path('security_logout') }}">
-        Logout
-    </a>
-</div>
+{% if (app.user) is not null %}
+    <div>
+        <a href="{{ path('profile', { 'id': app.user.id }) }}">
+            Profile
+        </a>
+    </div>
+{% endif %}
+
+
